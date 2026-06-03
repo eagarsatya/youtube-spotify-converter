@@ -12,12 +12,12 @@ export async function getVideoDetails(videoId: string): Promise<YouTubeTrack | n
   }
 
   try {
-    const res = await youtube.videos.list({
+    const res: any = await youtube.videos.list({
       part: ['snippet', 'contentDetails'],
       id: [videoId],
     });
 
-    const item = res.data.items?.[0];
+    const item: any = res.data.items?.[0];
     if (!item) return null;
 
     return {
@@ -43,7 +43,7 @@ export async function getPlaylistItems(playlistId: string): Promise<YouTubeTrack
 
   try {
     do {
-      const res = await youtube.playlistItems.list({
+      const res: any = await youtube.playlistItems.list({
         part: ['snippet', 'contentDetails'],
         playlistId: playlistId,
         maxResults: 50,
@@ -52,12 +52,12 @@ export async function getPlaylistItems(playlistId: string): Promise<YouTubeTrack
 
       const items = res.data.items || [];
       
-      const pageTracks: YouTubeTrack[] = items.map((item) => ({
+      const pageTracks: YouTubeTrack[] = items.map((item: any) => ({
         id: item.contentDetails?.videoId || item.snippet?.resourceId?.videoId || '',
         title: item.snippet?.title || 'Unknown Title',
         channel: item.snippet?.videoOwnerChannelTitle || 'Unknown Channel',
         thumbnail: item.snippet?.thumbnails?.medium?.url || item.snippet?.thumbnails?.default?.url || undefined,
-      })).filter(t => t.id && t.title !== 'Private video' && t.title !== 'Deleted video');
+      })).filter((t: YouTubeTrack) => t.id && t.title !== 'Private video' && t.title !== 'Deleted video');
 
       tracks = [...tracks, ...pageTracks];
       nextPageToken = res.data.nextPageToken;
