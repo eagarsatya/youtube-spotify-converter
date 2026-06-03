@@ -1,6 +1,6 @@
 import { SpotifyLogin } from './spotify-login';
 import { ThemeToggle } from './theme-toggle';
-import { FaYoutube, FaSpotify } from 'react-icons/fa';
+import { FaYoutube, FaSpotify, FaGithub } from 'react-icons/fa';
 
 export function Header() {
   return (
@@ -13,7 +13,17 @@ export function Header() {
           <h1 className="font-bold text-lg hidden sm:block ml-2 tracking-tight">YouTube to Spotify</h1>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <a 
+            href="https://github.com/eagarsatya/youtube-spotify-converter" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-full hover:bg-muted"
+            title="View source on GitHub"
+          >
+            <FaGithub className="w-5 h-5" />
+            <span className="sr-only">GitHub</span>
+          </a>
           <ThemeToggle />
           <SpotifyLogin />
         </div>
