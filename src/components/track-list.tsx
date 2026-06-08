@@ -45,19 +45,19 @@ export function TrackList({ results, onToggleTrack, onToggleAll, onCreatePlaylis
           </div>
         </div>
 
-        <div className="flex items-center gap-4 w-full sm:w-auto">
+        <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
           <Button 
-            variant="ghost" 
+            variant="outline" 
             size="sm"
             onClick={() => onToggleAll(!allMatchedSelected)}
             disabled={matched === 0}
-            className="text-xs"
+            className="w-full sm:w-auto h-10 sm:h-9 text-xs font-medium"
           >
             {allMatchedSelected ? 'Deselect All' : 'Select All Matched'}
           </Button>
           
           <Button 
-            className="bg-[#1DB954] hover:bg-[#1ed760] text-black font-bold w-full sm:w-auto"
+            className="rounded-md text-sm font-bold transition-transform hover:scale-[1.02] active:scale-[0.98] h-10 sm:h-9 px-6 bg-[#1DB954] hover:bg-[#1ed760] text-black shadow-md w-full sm:w-auto"
             disabled={selectedCount === 0}
             onClick={onCreatePlaylist}
           >

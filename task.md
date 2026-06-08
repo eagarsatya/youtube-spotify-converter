@@ -127,7 +127,7 @@
 
 ---
 
-## Stretch Goals (Post-MVP)
+## Phase 7: Additional Features
 - [ ] Reverse conversion: Spotify → YouTube
 - [ ] Support for YouTube Music links
 - [ ] Manual search override when match is wrong

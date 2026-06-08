@@ -18,10 +18,10 @@ export function TrackCard({ result, onToggle }: TrackCardProps) {
   const isMatched = status === 'success' && spotifyMatch;
 
   return (
-    <Card className={`p-4 transition-all duration-200 ${selected ? 'border-primary shadow-sm bg-primary/5' : ''}`}>
-      <div className="flex items-center gap-4">
+    <Card className={`p-3 md:p-4 transition-all duration-200 ${selected ? 'border-primary shadow-sm bg-primary/5' : ''}`}>
+      <div className="flex items-center gap-3 md:gap-4">
         {/* Checkbox */}
-        <div className="flex-shrink-0 pt-1">
+        <div className="flex-shrink-0">
           <Checkbox 
             checked={selected} 
             disabled={!isMatched}
@@ -31,11 +31,11 @@ export function TrackCard({ result, onToggle }: TrackCardProps) {
         </div>
 
         {/* Content Area */}
-        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow items-center">
+        <div className="relative flex flex-col md:grid md:grid-cols-2 gap-2 md:gap-4 flex-grow justify-center">
           
           {/* YouTube Side */}
           <div className="flex items-center gap-3">
-            <div className="relative w-16 h-12 flex-shrink-0 bg-muted rounded overflow-hidden">
+            <div className="relative w-14 h-10 md:w-16 md:h-12 flex-shrink-0 bg-muted rounded overflow-hidden">
               {youtubeTrack.thumbnail ? (
                 <Image 
                   src={youtubeTrack.thumbnail} 
@@ -46,15 +46,15 @@ export function TrackCard({ result, onToggle }: TrackCardProps) {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-zinc-800">
-                  <Play className="w-6 h-6 text-zinc-500 fill-current" />
+                  <Play className="w-5 h-5 md:w-6 md:h-6 text-zinc-500 fill-current" />
                 </div>
               )}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium truncate" title={youtubeTrack.title}>
+              <p className="text-sm font-medium leading-tight line-clamp-1" title={youtubeTrack.title}>
                 {youtubeTrack.title}
               </p>
-              <p className="text-xs text-muted-foreground truncate" title={youtubeTrack.channel}>
+              <p className="text-[11px] md:text-xs text-muted-foreground line-clamp-1 mt-0.5" title={youtubeTrack.channel}>
                 {youtubeTrack.channel}
               </p>
             </div>
@@ -63,6 +63,11 @@ export function TrackCard({ result, onToggle }: TrackCardProps) {
           {/* Arrow (Desktop only) */}
           <div className="hidden md:flex items-center justify-center text-muted-foreground/40 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
             →
+          </div>
+
+          {/* Arrow (Mobile only) */}
+          <div className="flex md:hidden items-center justify-center text-muted-foreground/30 -my-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
           </div>
 
           {/* Spotify Side */}

@@ -110,12 +110,12 @@ export function PlaylistCreator({ isOpen, onClose, trackUris, defaultName = 'Con
                 href={successUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-full text-base font-bold transition-transform hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-12 px-8 w-full bg-[#1DB954] hover:bg-[#1ed760] text-black shadow-md"
+                className="inline-flex items-center justify-center rounded-md text-sm font-bold transition-transform hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-12 px-8 w-full bg-[#1DB954] hover:bg-[#1ed760] text-black shadow-md"
               >
                 Open in Spotify
                 <ExternalLink className="w-5 h-5 ml-2 opacity-80" />
               </a>
-              <Button variant="ghost" className="w-full rounded-full h-12 font-medium" onClick={onClose}>
+              <Button variant="ghost" className="w-full rounded-md h-12 font-medium" onClick={onClose}>
                 Done
               </Button>
             </div>
@@ -170,13 +170,13 @@ export function PlaylistCreator({ isOpen, onClose, trackUris, defaultName = 'Con
 
         {!successUrl && session && (
           <DialogFooter>
-            <Button variant="ghost" onClick={onClose} disabled={isCreating}>
+            <Button variant="ghost" onClick={onClose} disabled={isCreating} className="rounded-md">
               Cancel
             </Button>
             <Button 
               onClick={handleCreate} 
               disabled={isCreating || !name.trim()}
-              className="bg-[#1DB954] hover:bg-[#1ed760] text-black font-bold min-w-[120px]"
+              className="rounded-md text-sm font-bold transition-transform hover:scale-[1.02] active:scale-[0.98] h-10 px-8 bg-[#1DB954] hover:bg-[#1ed760] text-black shadow-md min-w-[120px]"
             >
               {isCreating ? (
                 <>

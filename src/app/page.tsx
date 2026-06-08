@@ -133,7 +133,7 @@ export default function Home() {
         
         <div className={`w-full mx-auto transition-all duration-700 ease-in-out ${hasStarted ? 'max-w-4xl' : 'max-w-3xl'}`}>
           {/* Hero Section */}
-          <div className={`text-center mx-auto space-y-6 transition-all duration-700 ${hasStarted ? 'mb-8 scale-95 opacity-90' : 'mb-12 scale-100 opacity-100'}`}>
+          <div className={`text-center mx-auto space-y-6 transition-all duration-700 ${hasStarted ? 'mb-6 scale-95 opacity-90 hidden md:block' : 'mb-12 scale-100 opacity-100'}`}>
             <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
               Seamlessly port your music from <br className="hidden md:block" />
               <span className="text-[#FF0000] inline-flex items-center gap-1 mx-2"><FaYoutube className="w-[0.9em] h-[0.9em]" />YouTube</span> to <span className="text-[#1DB954] inline-flex items-center gap-1 mx-2"><FaSpotify className="w-[0.9em] h-[0.9em]" />Spotify</span>
