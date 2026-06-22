@@ -178,16 +178,16 @@ export async function getBotPlaylists(userId: string, token: string): Promise<an
   let url: string | null = `https://api.spotify.com/v1/users/${userId}/playlists?limit=50`;
 
   while (url) {
-    const response = await fetch(url, {
+    const res: Response = await fetch(url as string, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
 
-    if (!response.ok) {
-      console.error('Failed to fetch bot playlists', await response.text());
+    if (!res.ok) {
+      console.error('Failed to fetch bot playlists', await res.text());
       break;
     }
 
-    const data = await response.json();
+    const data = await res.json();
     playlists = playlists.concat(data.items);
     url = data.next;
   }
