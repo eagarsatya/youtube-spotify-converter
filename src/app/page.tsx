@@ -6,6 +6,7 @@ import { UrlInput } from '@/components/url-input';
 import { ConversionProgress } from '@/components/conversion-progress';
 import { TrackList } from '@/components/track-list';
 import { PlaylistCreator } from '@/components/playlist-creator';
+import { TutorialSection } from '@/components/tutorial-section';
 import { ConversionResult, ConversionProgress as ProgressType, YouTubeTrack } from '@/types';
 import { toast } from 'sonner';
 import { FaYoutube, FaSpotify } from 'react-icons/fa';
@@ -145,6 +146,8 @@ export default function Home() {
 
           <UrlInput onProcess={handleProcessUrl} isLoading={isLoading} />
         </div>
+
+        {!hasStarted && <TutorialSection />}
 
         {progress && (
           <div className="mt-12">
