@@ -168,22 +168,23 @@ Key UX changes:
 
 ---
 
-### Phase 4: Playlist Cleanup (Optional, Phase 7)
+### Phase 4: Playlist Cleanup (Stateless Cron Job)
 
-> [!NOTE]
-> This is a nice-to-have. Lower priority. The bot account will accumulate playlists indefinitely until this is implemented.
+To prevent the bot account from accumulating thousands of playlists, we will implement a cleanup cron job. Instead of using a database to track when playlists were created, we will use a **stateless** approach by embedding the creation timestamp directly into the playlist description.
 
-#### [NEW] `src/app/api/cleanup/route.ts`
-A `GET` route (protected by a secret header/key) that:
-- Reads a list of created playlists from a store (initially just a JSON file or Vercel KV).
-- Deletes playlists older than 30 days from the bot account via Spotify API.
-- Can be called by a Vercel Cron Job (daily).
+#### [MODIFY] `src/lib/spotify.ts`
+- Update `createPlaylist()` to append the creation timestamp to the description.
+  - E.g., `Converted from YouTube using YouTube-to-Spotify Converter | Created: 1687431585000`
 
-#### [NEW] `src/lib/playlist-store.ts`
-Simple file-based store (or Vercel KV) to track:
-```ts
-{ playlistId: string, createdAt: string, name: string }[]
-```
+#### [NEW] `src/app/api/cron/cleanup/route.ts`
+A `GET` route (protected by a `CRON_SECRET` header or environment variable) that:
+1. Fetches all playlists owned by the bot account using `GET https://api.spotify.com/v1/users/{userId}/playlists`.
+2. Iterates through the playlists and parses the description for the `Created: {timestamp}` signature.
+3. If the timestamp is older than 1 day, it issues a `DELETE https://api.spotify.com/v1/playlists/{playlistId}/followers` request (this is how you delete playlists in Spotify).
+4. Can be called automatically by a Vercel Cron Job (e.g., daily).
+
+#### [MODIFY] `vercel.json` (Optional)
+- Add a configuration for the cron job to run daily if deployed to Vercel.
 
 ---
 

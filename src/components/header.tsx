@@ -1,4 +1,3 @@
-import { SpotifyLogin } from './spotify-login';
 import { ThemeToggle } from './theme-toggle';
 import { FaYoutube, FaSpotify, FaGithub, FaCoffee } from 'react-icons/fa';
 
@@ -35,7 +34,6 @@ export function Header() {
             <span className="sr-only">GitHub</span>
           </a>
           <ThemeToggle />
-          <SpotifyLogin />
         </div>
       </div>
     </header>

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getClientCredentialsToken, searchTrack } from '@/lib/spotify';
+import { getBotAccessToken, searchTrack } from '@/lib/spotify';
 import { cleanYouTubeTitle } from '@/lib/title-cleaner';
 import { YouTubeTrack, SpotifyMatch, ConversionResult } from '@/types';
 
@@ -14,8 +14,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Tracks array is required' }, { status: 400 });
     }
 
-    // Use Client Credentials flow since we only need to search (no user context needed)
-    const token = await getClientCredentialsToken();
+    // Use Bot token
+    const token = await getBotAccessToken();
     const results: ConversionResult[] = [];
 
     // We process sequentially to avoid rate limiting
