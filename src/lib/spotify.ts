@@ -1,11 +1,19 @@
 import { SpotifyMatch, MatchConfidence } from '@/types';
 
-export async function getClientCredentialsToken(): Promise<string> {
+let cachedBotToken: { token: string; expiresAt: number } | null = null;
+
+export async function getBotAccessToken(): Promise<string> {
+  // If we have a valid token (with at least 1 minute remaining), use it
+  if (cachedBotToken && cachedBotToken.expiresAt > Date.now() + 60000) {
+    return cachedBotToken.token;
+  }
+
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+  const refreshToken = process.env.SPOTIFY_BOT_REFRESH_TOKEN;
 
-  if (!clientId || !clientSecret) {
-    throw new Error('Spotify client credentials are not configured.');
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error('Spotify bot credentials (including refresh token) are not configured.');
   }
 
   const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
@@ -17,18 +25,44 @@ export async function getClientCredentialsToken(): Promise<string> {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: new URLSearchParams({
-      grant_type: 'client_credentials',
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
     }),
-    cache: 'no-store', // Important so we don't cache stale tokens
+    cache: 'no-store',
   });
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`Failed to get Spotify token: ${error}`);
+    throw new Error(`Failed to refresh Spotify bot token: ${error}`);
   }
 
   const data = await response.json();
+  
+  // Cache the new token
+  cachedBotToken = {
+    token: data.access_token,
+    expiresAt: Date.now() + (data.expires_in * 1000),
+  };
+
   return data.access_token;
+}
+
+let cachedBotUserId: string | null = null;
+
+export async function getBotUserId(token: string): Promise<string> {
+  if (cachedBotUserId) return cachedBotUserId;
+
+  const response = await fetch('https://api.spotify.com/v1/me', {
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to get bot user ID');
+  }
+
+  const data = await response.json();
+  cachedBotUserId = data.id;
+  return data.id;
 }
 
 export async function searchTrack(title: string, artist: string, token: string): Promise<SpotifyMatch> {
@@ -82,6 +116,9 @@ export async function searchTrack(title: string, artist: string, token: string):
 }
 
 export async function createPlaylist(name: string, isPublic: boolean, userId: string, token: string): Promise<any> {
+  const timestamp = Date.now();
+  const description = `Converted from YouTube using YouTube-to-Spotify Converter | Created: ${timestamp}`;
+
   const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
     method: 'POST',
     headers: {
@@ -90,7 +127,7 @@ export async function createPlaylist(name: string, isPublic: boolean, userId: st
     },
     body: JSON.stringify({
       name,
-      description: 'Converted from YouTube using YouTube-to-Spotify Converter',
+      description,
       public: isPublic,
     }),
   });
@@ -134,4 +171,37 @@ function createNotFoundMatch(): SpotifyMatch {
     uri: '',
     confidence: 'Not Found',
   };
+}
+
+export async function getBotPlaylists(userId: string, token: string): Promise<any[]> {
+  let playlists: any[] = [];
+  let url: string | null = `https://api.spotify.com/v1/users/${userId}/playlists?limit=50`;
+
+  while (url) {
+    const res: Response = await fetch(url as string, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+
+    if (!res.ok) {
+      console.error('Failed to fetch bot playlists', await res.text());
+      break;
+    }
+
+    const data = await res.json();
+    playlists = playlists.concat(data.items);
+    url = data.next;
+  }
+
+  return playlists;
+}
+
+export async function unfollowPlaylist(playlistId: string, token: string): Promise<void> {
+  const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/followers`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    console.error(`Failed to delete (unfollow) playlist ${playlistId}`, await response.text());
+  }
 }
