@@ -10,6 +10,8 @@ import { YouTubeDraftList } from '@/components/youtube-draft-list';
 import { PlaylistCreator } from '@/components/playlist-creator';
 import { YouTubePlaylistCreator } from '@/components/youtube-playlist-creator';
 import { TutorialSection } from '@/components/tutorial-section';
+import { Footer } from '@/components/footer';
+import { ChangelogDialog } from '@/components/changelog-dialog';
 import {
   AppMode,
   ConversionResult,
@@ -35,6 +37,9 @@ export default function Home() {
   const [ytDraftLoading, setYtDraftLoading] = useState(false);
   const [ytDraftItems, setYtDraftItems] = useState<YouTubeDraftItem[]>([]);
   const [isYtCreatorOpen, setIsYtCreatorOpen] = useState(false);
+
+  // Changelog Dialog State
+  const [isChangelogOpen, setIsChangelogOpen] = useState(false);
 
   // Switch modes and clear temporary states
   const handleModeChange = (mode: AppMode) => {
@@ -102,9 +107,9 @@ export default function Home() {
         setProgress((prev) =>
           prev
             ? {
-                total: prev.total,
-                completed: Math.min(prev.completed + chunk.length, prev.total),
-              }
+              total: prev.total,
+              completed: Math.min(prev.completed + chunk.length, prev.total),
+            }
             : null
         );
 
@@ -179,9 +184,9 @@ export default function Home() {
         setProgress((prev) =>
           prev
             ? {
-                total: prev.total,
-                completed: Math.min(prev.completed + chunk.length, prev.total),
-              }
+              total: prev.total,
+              completed: Math.min(prev.completed + chunk.length, prev.total),
+            }
             : null
         );
 
@@ -240,19 +245,21 @@ export default function Home() {
 
   return (
     <>
-      <Header activeMode={activeMode} onModeChange={handleModeChange} />
+      <Header
+        activeMode={activeMode}
+        onModeChange={handleModeChange}
+        onOpenChangelog={() => setIsChangelogOpen(true)}
+      />
 
       <main
-        className={`flex-1 container mx-auto px-4 flex flex-col transition-all duration-700 ease-in-out ${
-          hasStarted ? 'justify-start pt-8 pb-24' : 'justify-center items-center pb-[12vh]'
-        }`}
+        className={`flex-1 container mx-auto px-4 flex flex-col transition-all duration-700 ease-in-out ${hasStarted ? 'justify-start pt-8 pb-24' : 'justify-center items-center pb-[12vh]'
+          }`}
       >
         <div className={`w-full mx-auto transition-all duration-700 ease-in-out ${hasStarted ? 'max-w-4xl' : 'max-w-3xl'}`}>
           {/* Hero Section */}
           <div
-            className={`text-center mx-auto space-y-4 transition-all duration-700 ${
-              hasStarted ? 'mb-6 scale-95 opacity-90 hidden md:block' : 'mb-10 scale-100 opacity-100'
-            }`}
+            className={`text-center mx-auto space-y-4 transition-all duration-700 ${hasStarted ? 'mb-6 scale-95 opacity-90 hidden md:block' : 'mb-10 scale-100 opacity-100'
+              }`}
           >
             {activeMode === 'yt-to-spotify' ? (
               <>
@@ -322,6 +329,15 @@ export default function Home() {
           />
         )}
       </main>
+
+      {/* Footer with Version & Changelog links */}
+      <Footer onOpenChangelog={() => setIsChangelogOpen(true)} />
+
+      {/* Changelog Dialog */}
+      <ChangelogDialog
+        open={isChangelogOpen}
+        onOpenChange={setIsChangelogOpen}
+      />
 
       {/* Spotify Playlist Creator Dialog */}
       <PlaylistCreator

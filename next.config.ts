@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Opt out yt-search and cheerio from Turbopack server bundling
+  serverExternalPackages: ['yt-search', 'cheerio'],
+
   // Allow 127.0.0.1 for local dev (needed for Spotify OAuth local testing)
   // @ts-ignore - The type definition in some Next.js versions might lag behind the actual feature
   allowedDevOrigins: ['127.0.0.1'],

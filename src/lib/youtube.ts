@@ -1,5 +1,4 @@
 import { google } from 'googleapis';
-import ytSearch from 'yt-search';
 import { YouTubeTrack } from '@/types';
 
 const youtube = google.youtube({
@@ -12,11 +11,13 @@ export async function searchYouTubeVideos(query: string, limit = 3): Promise<You
   if (!cleanQuery) return [];
 
   try {
+    const ytSearchModule: any = await import('yt-search');
+    const ytSearch = ytSearchModule.default || ytSearchModule;
     const searchResult = await ytSearch(cleanQuery);
     const videos = searchResult.videos || [];
 
     if (videos.length > 0) {
-      return videos.slice(0, limit).map((video) => ({
+      return videos.slice(0, limit).map((video: any) => ({
         id: video.videoId,
         title: video.title,
         channel: video.author?.name || 'Unknown Channel',
